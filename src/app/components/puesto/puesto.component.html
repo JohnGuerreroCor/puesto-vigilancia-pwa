@@ -1,0 +1,222 @@
+<app-navbar>
+  <div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>¡Información para tener en cuenta!</strong> <br>
+    La nomenclatura para nombrar los diferentes tipos de puestos es la siguiente:
+    <ul>
+      <li>Tipo Peatonal: <strong>PUESTO VIGILANCIA - ENTRADA ...</strong></li>
+      <li>Tipo Vehicular y ciclas: <strong>PUESTO VIGILANCIA - PARQUEADERO ...</strong></li>
+    </ul>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div id="content-wrap" class="container mt-3 text-center mb-5">
+    <div class="card rounded-2 p-0 shadow-sm mt-5">
+      <div class="card-header text-center ml-4 mr-4 cursor-select" [routerLink]="['/puestos']"
+        routerLinkActive="router-link-active">
+        <h4 class="font-usco-default">
+          <strong>Creación puesto de vigilancia</strong>
+        </h4>
+      </div>
+      <div class="card-body ls">
+        <div class="row">
+          <div class="col">
+            <form class="pl-4 pr-4" [formGroup]="formularioPuestoVigilancia">
+              <div class="row text-left mb-2">
+                <div class="col">
+                  <h6 class="font-usco-gr font-weight-bold">Parámetros de puesto:</h6>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="form-group">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Nombre del puesto</mat-label>
+                      <input matInput class="form_control" placeholder="PUESTO VIGILANCIA - ..." type="text"
+                        formControlName="nombre" id="nombre" required />
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="form-group">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Sede</mat-label>
+                      <mat-select formControlName="sede" id="sede">
+                        <mat-option *ngFor="let sede of sedes" [value]="sede.codigo"
+                          (click)="buscarSubsede(sede.codigo)">{{sede.sedeNombre}}</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="form-group">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Sub - Sede</mat-label>
+                      <mat-select formControlName="subsede" id="subsede">
+                        <mat-option *ngFor="let subsede of subsedes" [value]="subsede.codigo"
+                          (click)="buscarBloque(subsede.codigo)">{{subsede.subSedeNombre}}</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="form-group">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Bloque</mat-label>
+                      <mat-select formControlName="bloque" id="bloque">
+                        <mat-option *ngFor="let bloque of bloques"
+                          [value]="bloque.codigo">{{bloque.bloqueNombre}}</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="form-group">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Tipo de puesto</mat-label>
+                      <mat-select formControlName="tipo" id="tipo">
+                        <mat-option *ngFor="let tipo of tipoPuesto" [value]="tipo.codigo"
+                          (click)="cupos(tipo.codigo)">{{tipo.nombre}}</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+              <div class="row text-left mb-2" *ngIf="vehicular">
+                <div class="col">
+                  <h6 class="font-usco-gr font-weight-bold">Cupo vehícular:</h6>
+                </div>
+              </div>
+              <div class="row" *ngIf="vehicular">
+                <div class="col">
+                  <div class="form-group">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Carros</mat-label>
+                      <input matInput class="form_control" type="number" formControlName="carro" id="carro" />
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="form-group">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Motos</mat-label>
+                      <input matInput class="form_control" type="number" formControlName="moto" id="moto" />
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="form-group">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Bicicletas</mat-label>
+                      <input matInput class="form_control" type="number" formControlName="bicicleta" id="bicicleta" />
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+              <div class="row text-left mb-2" *ngIf="bicicletas">
+                <div class="col">
+                  <h6 class="font-usco-gr font-weight-bold">Cupo bicicletas:</h6>
+                </div>
+              </div>
+              <div class="row" *ngIf="bicicletas">
+                <div class="col-lg-4">
+                  <div class="form-group">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Bicicletas</mat-label>
+                      <input matInput class="form_control" type="number" formControlName="bicicleta" id="bicicleta" />
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <button class="btn btn-usco-vt mr-2" [disabled]="!formularioPuestoVigilancia.valid"
+                    data-toggle="tooltip" data-placement="top" title="guardar" (click)="generarPuestoVigilancia()"><i
+                      class="fa-solid fa-floppy-disk"></i> Guardar</button>
+                  <button *ngIf="editar" class="btn btn-usco-vt mr-2" [disabled]="!formularioPuestoVigilancia.valid"
+                    data-toggle="tooltip" data-placement="top" title="cancelar"
+                    (click)="desactivarPuestoVigilancia()"><i class="fa-solid fa-ban"></i>
+                    Desactivar</button>
+                  <button *ngIf="editar" class="btn btn-usco-vt" [disabled]="!formularioPuestoVigilancia.valid"
+                    data-toggle="tooltip" data-placement="top" title="cancelar" (click)="cancelar()"><i
+                      class="fa-solid fa-xmark"></i>
+                    Cancelar</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="col">
+            <table mat-table [dataSource]="dataSource" class="table table-hover">
+              <ng-container matColumnDef="index">
+                <th mat-header-cell *matHeaderCellDef>N°</th>
+                <td mat-cell *matCellDef="let element; let i = index">
+                  {{ dataSource.filteredData.indexOf(element) + 1 }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="sede">
+                <th mat-header-cell *matHeaderCellDef>Sede</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.sede.nombre }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="subsede">
+                <th mat-header-cell *matHeaderCellDef>SubSede</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.subsede.subSedeNombre }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="nombre">
+                <th mat-header-cell *matHeaderCellDef>Puesto</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.nombre }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="tipo">
+                <th mat-header-cell *matHeaderCellDef>Tipo</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.tipoPuesto.nombre }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="estado">
+                <th mat-header-cell *matHeaderCellDef>Estado</th>
+                <td mat-cell *matCellDef="let element">
+                  <button class="btn btn btn-success btn-sm" *ngIf="element.estado === 1" data-toggle="tooltip"
+                    data-placement="top" title="Activo">
+                    <i class="fas fa-check-square"></i>
+                  </button>
+                  <button class="btn btn btn-secondary btn-sm" *ngIf="element.estado === 0" data-toggle="tooltip"
+                    data-placement="top" title="Cerrado">
+                    <i class="fas fa-minus-square"></i>
+                  </button>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="informacion">
+                <th mat-header-cell *matHeaderCellDef>Información</th>
+                <td mat-cell *matCellDef="let element">
+                  <button class="btn btn-usco-vt btn-sm" title="Ajustes" (click)="openDialog(element)"><i
+                      class="fa-solid fa-circle-info"></i></button>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="opciones">
+                <th mat-header-cell *matHeaderCellDef>Ajustes</th>
+                <td mat-cell *matCellDef="let element">
+                  <button class="btn btn-usco-vt btn-sm" title="Ajustes" (click)="editarPuestoVigilancia(element)"><i
+                      class="fa-solid fa-gear"></i></button>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[10, 20, 30]" showFirstLastButtons></mat-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-navbar>

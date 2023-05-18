@@ -1,0 +1,110 @@
+<app-navbar>
+  <div id="content-wrap" class="container mt-3 mb-5 text-center" #target>
+    <div class="card rounded-2 p-0 shadow-sm mt-5">
+      <div class="card-header text-center ml-4 mr-4 cursor-select" [routerLink]="['/politicas']"
+        routerLinkActive="router-link-active">
+        <h4 class="font-usco-default">
+          <strong>Política Carnetización</strong>
+        </h4>
+      </div>
+      <div class="card-body ls">
+        <div class="row">
+          <div class="col">
+            <form class="pl-4 pr-4" [formGroup]="formPolitica">
+              <div class="row text-left mb-2">
+                <div class="col">
+                  <h6 class="font-usco-gr font-weight-bold">Política lado posterior del carnet:</h6>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col col-lg-1" *ngIf="estamentoCodigo === 2">
+                  <button class="btn bg-usco-gr mr-2 text-white"><i class="fa-solid fa-user"></i></button>
+                </div>
+                <div class="col col-lg-1" *ngIf="estamentoCodigo === 4">
+                  <button class="btn bg-usco-gr mr-2 text-white"><i class="fa-solid fa-graduation-cap"></i></button>
+                </div>
+                <div class="col col-lg-1" *ngIf="estamentoCodigo === 3">
+                  <button class="btn bg-usco-gr mr-2 text-white"><i class="fa-solid fa-chalkboard-user"></i></button>
+                </div>
+                <div class="col col-lg-1" *ngIf="estamentoCodigo === 1">
+                  <button class="btn bg-usco-gr mr-2 text-white"><i class="fa-solid fa-user-tie"></i></button>
+                </div>
+                <div class="col">
+                  <div class="form-group">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>{{estamento}}</mat-label>
+                      <textarea rows="3" matInput placeholder="Política" formControlName="descripcion"
+                        id="descripcion"></textarea>
+                      <mat-hint>Fecha de modificación {{fechaModificacion | date:'dd/MM/yyyy'}}</mat-hint>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <button class="btn btn-usco-vt mr-2" [disabled]="!editar" data-toggle="tooltip" data-placement="top"
+                    title="guardar" (click)="parametrosPoliticaActualizar()"><i class="fa-solid fa-floppy-disk"></i>
+                    Guardar</button>
+                  <button class="btn btn-usco-vt" [disabled]="!editar" data-toggle="tooltip" data-placement="top"
+                    title="cancelar" (click)="cancelar()"><i class="fa-solid fa-xmark"></i>
+                    Cancelar</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="row mt-5">
+          <div class="col">
+            <table mat-table [dataSource]="dataSource" class="table table-hover">
+              <ng-container matColumnDef="index">
+                <th mat-header-cell *matHeaderCellDef>Tipo</th>
+                <td mat-cell *matCellDef="let element; let i = index">
+                  <button *ngIf="dataSource.filteredData.indexOf(element) === 0" class="btn bg-usco-gr mr-2 text-white"
+                    data-toggle="tooltip" data-placement="top" [title]="element.estamento.nombre"><i
+                      class="fa-solid fa-user"></i></button>
+                  <button *ngIf="dataSource.filteredData.indexOf(element) === 1" class="btn bg-usco-gr mr-2 text-white"
+                    data-toggle="tooltip" data-placement="top" [title]="element.estamento.nombre"><i
+                      class="fa-solid fa-graduation-cap"></i></button>
+                  <button *ngIf="dataSource.filteredData.indexOf(element) === 2" class="btn bg-usco-gr mr-2 text-white"
+                    data-toggle="tooltip" data-placement="top" [title]="element.estamento.nombre"><i
+                      class="fa-solid fa-chalkboard-user"></i></button>
+                  <button *ngIf="dataSource.filteredData.indexOf(element) === 3" class="btn bg-usco-gr mr-2 text-white"
+                    data-toggle="tooltip" data-placement="top" [title]="element.estamento.nombre"><i
+                      class="fa-solid fa-user-tie"></i></button>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="estamento">
+                <th mat-header-cell *matHeaderCellDef>Estamento</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.estamento.nombre }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="descripcion">
+                <th mat-header-cell *matHeaderCellDef>Descripción</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.descripcion }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="fecha">
+                <th mat-header-cell *matHeaderCellDef>Modificación</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.fechaModificacion | date: 'dd/MM/yyyy' }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="opciones">
+                <th mat-header-cell *matHeaderCellDef>Opciones</th>
+                <td mat-cell *matCellDef="let element">
+                  <button class="btn btn-usco-vt btn-sm" (click)="editarPolitica(element)" (click)="scroll(target)"><i
+                      class="fa-solid fa-pencil"></i></button>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[10, 20, 30]" showFirstLastButtons></mat-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-navbar>
