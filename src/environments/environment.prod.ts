@@ -5,13 +5,12 @@ export const environment = {
   //  URL_BACKEND: "/planes-posgrado-1.0"
 
   firebase: {
-    apiKey: 'AIzaSyDCI1DjDRTyWgCJd681nhrEqY216Kfbm44',
-    authDomain: 'doctoradocienciasdelasaludusco.firebaseapp.com',
-    databaseURL: 'https://doctoradocienciasdelasaludusco.firebaseio.com',
-    projectId: 'doctoradocienciasdelasaludusco',
-    storageBucket: 'doctoradocienciasdelasaludusco.appspot.com',
-    messagingSenderId: '399106387464',
-    appId: '1:399106387464:web:7741df6f88e489f7176bbd',
-    measurementId: 'G-PTHMQCDL1F'
+    apiKey: "AIzaSyC-w4C74J4IbOusCMYr1vYK3Q2Vf8o_-Q0",
+    authDomain: "puesto-vigilancia-usco.firebaseapp.com",
+    projectId: "puesto-vigilancia-usco",
+    storageBucket: "puesto-vigilancia-usco.appspot.com",
+    messagingSenderId: "931199070948",
+    appId: "1:931199070948:web:acf2da0eb2cea2ae9972f1",
+    measurementId: "G-BXBZ2703T4"
   }
 };

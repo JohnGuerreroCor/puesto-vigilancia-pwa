@@ -1,7 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
-import { AuthService } from 'src/app/services/auth.service';
-import { TokenService } from 'src/app/services/token.service';
 import swal from 'sweetalert2'
 import { Correo } from 'src/app/models/correo';
 
@@ -11,7 +9,7 @@ import { Correo } from 'src/app/models/correo';
   styleUrls: ['./token.component.css']
 })
 export class TokenComponent implements OnInit {
-  
+
   correo: Correo = null;
   codigo: String;
   codioCorrecto: String;
@@ -19,34 +17,19 @@ export class TokenComponent implements OnInit {
   cargando: boolean = false;
   @Output() rolEvent = new EventEmitter<any>();
 
-  constructor(public auth: AuthService, private router: Router, public tokenService: TokenService) { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
-    this.tokenService.gettokenUsco().subscribe(
-      correo => {
-        if (JSON.stringify(correo) === '[]') {
-          this.router.navigate(['/login']);
-        } else {
-          this.correo = correo
-        }
-      }
-    );
   }
 
   validarToken() {
-    this.cargando = true;
-    if (this.codigo) {
-      this.tokenService.validartokenUsco(this.codigo).subscribe(response => {
-        this.auth.guardarCodigoverificacion("true");
-        swal.fire({
-          icon: 'success', title: 'inicio de sesión ',
-          text: 'Codigo de verificación correcto.',
-        })
-        this.router.navigate(['/inicio']);
-      }, err => this.fError(err));
-    }
-
+    swal.fire({
+      icon: "success",
+      title: "Inicio de sesión ",
+      text: "Codigo de verificación correcto.",
+    });
   }
+
 
   fError(er): void {
     this.cargando = false;

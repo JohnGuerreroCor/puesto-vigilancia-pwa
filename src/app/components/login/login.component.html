@@ -23,41 +23,34 @@
               <mat-form-field class="example-full-width">
                 <span matPrefix class="mr-2"><i class="fa-solid fa-user"></i></span>
                 <mat-label>Usuario</mat-label>
-                <input matInput [(ngModel)]="usuario.username" name="username" />
+                <input matInput [(ngModel)]="usuario.username" placeholder="Documento de identidad" name="username" />
               </mat-form-field>
             </div>
           </div>
           <div class="row">
             <div class="col">
               <mat-form-field class="example-full-width">
-                <span matPrefix class="mr-2"><i class="fa-solid fa-lock"></i></span>
-                <mat-label>Contraseña</mat-label>
-                <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="usuario.password" type="password"
-                  name="password" placeholder="Digite la primera clave" />
-                <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
-                  [attr.aria-pressed]="hide">
-                  <mat-icon>{{
-                    hide ? "visibility_off" : "visibility"
-                    }}</mat-icon>
-                </button>
+                <span matPrefix class="mr-2"><i class="fa-solid fa-at"></i></span>
+                <mat-label>Correo</mat-label>
+                <input matInput [(ngModel)]="correo" placeholder="ejemplo@gmail.com" name="username" />
               </mat-form-field>
             </div>
           </div>
           <div class="row">
             <div class="col mt-3 mb-4">
-              <button (click)="login()" type="submit" class="btn btn-usco-vt">
+              <button [routerLink]="['/token']" routerLinkActive="router-link-active"  class="btn btn-usco-vt">
                 Ingresar
                 <i *ngIf="cargando" class="fas fa-spinner fa-pulse"></i>
               </button>
             </div>
           </div>
-          <div class="row">
+          <!--  <div class="row">
             <div class="col mb-4">
               <a href="https://www.usco.edu.co/cambio_clave/" target="_blank"><small
                   class="font-usco-vt font-weight-bold">¿Olvidó su
                   contraseña?</small></a>
             </div>
-          </div>
+          </div> -->
           <div>
             <small><b class="version">© {{ today | date : "yyyy" }} CITCD - Version 1 Construcción
                 1.0</b></small>

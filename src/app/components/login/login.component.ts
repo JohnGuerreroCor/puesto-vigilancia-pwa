@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { Usuario } from '../../models/usuario';
 import swal from 'sweetalert2'
@@ -17,24 +16,11 @@ export class LoginComponent implements OnInit {
   today = new Date();
   cargando: boolean = false;
 
-  constructor(public authService: AuthService, private router: Router) {
+  constructor(private router: Router) {
     this.usuario = new Usuario();
   }
 
   ngOnInit() {
-    if (this.authService.isAuthenticated()) {
-      if (this.authService.codigoverificacion != null) {
-        swal.fire({
-          icon: 'info', title: 'Login Info', text: 'Ya se ha iniciado sesión',
-          toast: true,
-          position: 'top-right',
-          timer: 1500
-        })
-        this.router.navigate(['inicio']);
-      } else {
-        this.router.navigate(['token']);
-      }
-    }
   }
 
   login(): void {
@@ -48,16 +34,6 @@ export class LoginComponent implements OnInit {
       this.cargando = false;
       return;
     }
-    this.authService.login(this.usuario).subscribe(response => {
-      this.authService.guardarUsuario(response.access_token);
-      this.authService.guardarToken(response.access_token);
-      swal.fire({
-        icon: 'success', title: 'inicio de sesión ', text: 'Inicio de sesión exitoso.', toast: true,
-        position: 'top-right',
-        timer: 1500
-      });
-      this.router.navigate(['/token']);
-    }, err => this.fError(err));
   }
 
   fError(er): void {

@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from 'src/app/services/auth.service';
 import { environment } from 'src/environments/environment';
-import { UbicacionService } from '../../services/ubicacion.service';
 import { BehaviorSubject, fromEvent, Observable, Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
 
@@ -17,19 +15,14 @@ export class InicioComponent implements OnInit {
   resizeSubscription: Subscription;
 
   mobile: boolean = false;
-  
+
   anio: number;
   fecha = new Date();
   url: string = environment.URL_BACKEND;
 
-  constructor(public auth: AuthService, private router: Router, public ubicacionService: UbicacionService) { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
-    if (!this.auth.isAuthenticated()) {
-      this.router.navigate(['/login']);
-    } else {
-      this.obtenerSedes();
-    }
     this.anio = this.fecha.getUTCFullYear();
 
     if (window.screen.width <= 950) { // 768px portrait
@@ -48,7 +41,7 @@ export class InicioComponent implements OnInit {
   }
 
   obtenerSedes() {
-    this.ubicacionService.obtenerSedes().subscribe();
+
   }
 
   mensajeError() {
@@ -77,7 +70,6 @@ export class InicioComponent implements OnInit {
 
     if (arr[0] == "Access token expired") {
 
-      this.auth.logout();
       this.router.navigate(['login']);
 
     } else {

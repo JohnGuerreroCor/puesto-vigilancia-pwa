@@ -1,25 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { BarcodeFormat } from "@zxing/library";
-import { EstudianteService } from '../../services/estudiante.service';
 import { environment } from 'src/environments/environment';
 import { Estudiante } from '../../models/estudiante';
-import { FotoService } from 'src/app/services/foto.service';
 import { FotoAntigua } from '../../models/foto-antigua';
-import { AuthService } from '../../services/auth.service';
-import { PoliticaService } from '../../services/politica.service';
-import { PoliticaEstamento } from '../../models/politica-estamento';
-import { FirmaDigitalService } from '../../services/firma-digital.service';
 import { Router } from '@angular/router';
 import { BehaviorSubject, fromEvent, Observable, Subscription } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import { Graduado } from 'src/app/models/graduado';
-import { GraduadoService } from 'src/app/services/graduado.service';
 import { Docente } from 'src/app/models/docente';
-import { DocenteService } from 'src/app/services/docente.service';
 import { Administrativo } from 'src/app/models/administrativo';
-import { AdministrativoService } from 'src/app/services/administrativo.service';
-import { PersonaService } from 'src/app/services/persona.service';
-import { TicketService } from 'src/app/services/ticket.service';
 import { Persona } from 'src/app/models/persona';
 import Swal from 'sweetalert2';
 import { Ticket } from 'src/app/models/ticket';
@@ -80,8 +69,6 @@ export class EscanerComponent implements OnInit {
   persona: Persona[] = [];
   ticket: Ticket[] = [];
 
-  politicaEstudiante: PoliticaEstamento[] = [];
-
   //Complementos
   tipoTiquete: number = 2;
   botonRadio: number;
@@ -103,17 +90,7 @@ export class EscanerComponent implements OnInit {
   };
 
   constructor(
-    public estServices: EstudianteService,
-    public graduadoService: GraduadoService,
-    public docenteService: DocenteService,
-    public administrativoService: AdministrativoService,
-    public personaService: PersonaService,
-    public tiketServie: TicketService,
-    public fotoService: FotoService,
-    public politicaService: PoliticaService,
-    public firmaService: FirmaDigitalService,
     private datePipe: DatePipe,
-    private auth: AuthService,
     private router: Router) {
     this.codigoQr = 'https://www.usco.edu.co/';
   }
@@ -248,7 +225,7 @@ export class EscanerComponent implements OnInit {
   }
 
   buscarEstudiante(codigo: String) {
-    this.estServices.getEstudiante(codigo).subscribe(data => {
+    /* this.estServices.getEstudiante(codigo).subscribe(data => {
       if (JSON.stringify(data) !== "[]") {
         this.lectura();
         this.estudiante = data;
@@ -271,65 +248,65 @@ export class EscanerComponent implements OnInit {
           text: 'El código digitado no encontró ningún Estudiante asociado, por favor rectifique el código.',
         });
       }
-    });
+    }); */
   }
 
   buscarGraduado(codigo: String) {
-    this.graduadoService.obtenerGraduado(codigo).subscribe(data => {
-      if (JSON.stringify(data) !== "[]") {
-        this.lectura();
-        this.graduado = data;
-        this.codigoQr = 'https://sanagustin.usco.edu.co/planes_academicos/obtenerFoto/' + this.graduado[0].persona.codigo;
-        this.mostrarFotoGraduado('' + this.graduado[0].persona.codigo);
-        setTimeout(() => {
-          this.alert = true;
-        }, 2000);
-      } else {
-        this.error();
-        this.foto.url = '';
-        this.graduado = [];
-        this.codigoQr = 'Sin resultado';
-        setTimeout(() => {
-          this.alert = true;
-        }, 2000);
-        Swal.fire({
-          icon: 'warning',
-          title: 'No existe',
-          text: 'El código no encontró ningún Graduado asociado, por favor rectifique el código.',
-        });
-      }
-    });
+    /*  this.graduadoService.obtenerGraduado(codigo).subscribe(data => {
+       if (JSON.stringify(data) !== "[]") {
+         this.lectura();
+         this.graduado = data;
+         this.codigoQr = 'https://sanagustin.usco.edu.co/planes_academicos/obtenerFoto/' + this.graduado[0].persona.codigo;
+         this.mostrarFotoGraduado('' + this.graduado[0].persona.codigo);
+         setTimeout(() => {
+           this.alert = true;
+         }, 2000);
+       } else {
+         this.error();
+         this.foto.url = '';
+         this.graduado = [];
+         this.codigoQr = 'Sin resultado';
+         setTimeout(() => {
+           this.alert = true;
+         }, 2000);
+         Swal.fire({
+           icon: 'warning',
+           title: 'No existe',
+           text: 'El código no encontró ningún Graduado asociado, por favor rectifique el código.',
+         });
+       }
+     }); */
   }
 
   buscarDocente(id: String) {
-    this.docenteService.getDocente(id).subscribe(data => {
-      if (JSON.stringify(data) !== "[]") {
-        this.lectura();
-        this.docente = data;
-        this.codigoQr = 'https://sanagustin.usco.edu.co/planes_academicos/obtenerFoto/' + this.docente[0].persona.codigo;
-        this.mostrarFotoDocente('' + this.docente[0].persona.codigo);
-        setTimeout(() => {
-          this.alert = true;
-        }, 2000);
-      } else {
-        this.error();
-        this.foto.url = '';
-        this.docente = [];
-        this.codigoQr = 'Sin resultado';
-        setTimeout(() => {
-          this.alert = true;
-        }, 2000);
-        Swal.fire({
-          icon: 'warning',
-          title: 'No existe',
-          text: 'El código no encontró ningún Docente asociado, por favor rectifique el código.',
-        });
-      }
-    });
+    /*  this.docenteService.getDocente(id).subscribe(data => {
+       if (JSON.stringify(data) !== "[]") {
+         this.lectura();
+         this.docente = data;
+         this.codigoQr = 'https://sanagustin.usco.edu.co/planes_academicos/obtenerFoto/' + this.docente[0].persona.codigo;
+         this.mostrarFotoDocente('' + this.docente[0].persona.codigo);
+         setTimeout(() => {
+           this.alert = true;
+         }, 2000);
+       } else {
+         this.error();
+         this.foto.url = '';
+         this.docente = [];
+         this.codigoQr = 'Sin resultado';
+         setTimeout(() => {
+           this.alert = true;
+         }, 2000);
+         Swal.fire({
+           icon: 'warning',
+           title: 'No existe',
+           text: 'El código no encontró ningún Docente asociado, por favor rectifique el código.',
+         });
+       }
+     }); */
   }
 
   buscarAdministrativo(id: String) {
-    this.administrativoService.getAdministrativo(id).subscribe(data => {
+    /* this.administrativoService.getAdministrativo(id).subscribe(data => {
       if (JSON.stringify(data) !== "[]") {
         this.lectura();
         this.administrativo = data;
@@ -355,51 +332,48 @@ export class EscanerComponent implements OnInit {
         this.administrativo = [];
         this.codigoQr = 'Sin resultado';
       }
-    });
+    }); */
   }
 
   buscarTiquete(id: String) {
-    this.tiketServie.obtenerTicketIdentificacion(id).subscribe(data => {
-      console.log(data);
-      if (JSON.stringify(data) !== "[]") {
-        console.log(this.datePipe.transform(data[0].fechaVigencia, 'yyyy-MM-dd') + '>' + this.datePipe.transform(new Date(), 'yyyy-MM-dd'));
-        console.log(this.datePipe.transform(data[0].fechaVigencia, 'yyyy-MM-dd') >= this.datePipe.transform(new Date(), 'yyyy-MM-dd'));
-        if (this.datePipe.transform(data[0].fechaVigencia, 'yyyy-MM-dd') >= this.datePipe.transform(new Date(), 'yyyy-MM-dd')) {
-          this.ticket = data;
-          this.tipoTiquete = data[0].tipo;
-          this.mensajeRealizado();
-          this.lectura();
-          console.log(this.ticket);
-          setTimeout(() => {
-            this.alert = true;
-          }, 2000);
-          /* this.personaService.obtenerPersonaPorPerCodigo(data[0].codigo).subscribe(data => {
-            this.persona = data;
-          }); */
-        } else {
-          this.error();
-          this.foto.url = '';
-          Swal.fire({
-            icon: 'warning',
-            title: 'No existe o expiró el tiquete',
-            text: 'El código no encontró ningún Tiquete vigente o asociado, por favor rectifique el código.',
-          });
-          this.ticket = [];
-          setTimeout(() => {
-            this.alert = true;
-          }, 2000);
-        }
-      } else {
-        this.error();
-        this.foto.url = '';
-        Swal.fire({
-          icon: 'warning',
-          title: 'No existe o expiró el tiquete',
-          text: 'El código no encontró ningún Tiquete vigente o asociado, por favor rectifique el código.',
-        });
-        this.ticket = [];
-      }
-    });
+    /*  this.tiketServie.obtenerTicketIdentificacion(id).subscribe(data => {
+       console.log(data);
+       if (JSON.stringify(data) !== "[]") {
+         console.log(this.datePipe.transform(data[0].fechaVigencia, 'yyyy-MM-dd') + '>' + this.datePipe.transform(new Date(), 'yyyy-MM-dd'));
+         console.log(this.datePipe.transform(data[0].fechaVigencia, 'yyyy-MM-dd') >= this.datePipe.transform(new Date(), 'yyyy-MM-dd'));
+         if (this.datePipe.transform(data[0].fechaVigencia, 'yyyy-MM-dd') >= this.datePipe.transform(new Date(), 'yyyy-MM-dd')) {
+           this.ticket = data;
+           this.tipoTiquete = data[0].tipo;
+           this.mensajeRealizado();
+           this.lectura();
+           console.log(this.ticket);
+           setTimeout(() => {
+             this.alert = true;
+           }, 2000);
+         } else {
+           this.error();
+           this.foto.url = '';
+           Swal.fire({
+             icon: 'warning',
+             title: 'No existe o expiró el tiquete',
+             text: 'El código no encontró ningún Tiquete vigente o asociado, por favor rectifique el código.',
+           });
+           this.ticket = [];
+           setTimeout(() => {
+             this.alert = true;
+           }, 2000);
+         }
+       } else {
+         this.error();
+         this.foto.url = '';
+         Swal.fire({
+           icon: 'warning',
+           title: 'No existe o expiró el tiquete',
+           text: 'El código no encontró ningún Tiquete vigente o asociado, por favor rectifique el código.',
+         });
+         this.ticket = [];
+       }
+     }); */
   }
 
   lectura() {
@@ -532,84 +506,77 @@ export class EscanerComponent implements OnInit {
     });
   }
 
-  buscarPoliticaEstamento() {
-    this.politicaService.obtenerPoliticaPorCodigoEstamento(2).subscribe(data => {
-      this.politicaEstudiante = data;
-    });
-  }
-
-
   mostrarFotoEstudiante(perCodigo: String) {
-    this.fotoService.mirarFoto(perCodigo).subscribe(data => {
-      var gg = new Blob([data], { type: 'application/json' })
-      if (gg.size !== 4) {
-        var blob = new Blob([data], { type: 'image/png' });
-        const foto = blob;
-        const reader = new FileReader();
-        reader.onload = () => {
-          this.foto.url = reader.result as string;
-          if (this.foto.url != '') {
-            this.mensajeRealizado();
-          }
-        }
-        reader.readAsDataURL(foto);
-
-      } else {
-        this.fotoService.mirarFotoAntigua('' + this.estudiante[0].persona.codigo).subscribe(data => {
-          this.foto = data;
-        });
-      }
-    });
+    /*  this.fotoService.mirarFoto(perCodigo).subscribe(data => {
+       var gg = new Blob([data], { type: 'application/json' })
+       if (gg.size !== 4) {
+         var blob = new Blob([data], { type: 'image/png' });
+         const foto = blob;
+         const reader = new FileReader();
+         reader.onload = () => {
+           this.foto.url = reader.result as string;
+           if (this.foto.url != '') {
+             this.mensajeRealizado();
+           }
+         }
+         reader.readAsDataURL(foto);
+ 
+       } else {
+         this.fotoService.mirarFotoAntigua('' + this.estudiante[0].persona.codigo).subscribe(data => {
+           this.foto = data;
+         });
+       }
+     }); */
   }
 
   mostrarFotoAdministrativo(perCodigo: String) {
-    this.fotoService.mirarFoto(perCodigo).subscribe(data => {
-      var gg = new Blob([data], { type: 'application/json' })
-      if (gg.size !== 4) {
-        var blob = new Blob([data], { type: 'image/png' });
-        const foto = blob;
-        const reader = new FileReader();
-        reader.onload = () => {
-          this.foto.url = reader.result as string;
-          if (this.foto.url != '') {
-            this.mensajeRealizado();
+    /*   this.fotoService.mirarFoto(perCodigo).subscribe(data => {
+        var gg = new Blob([data], { type: 'application/json' })
+        if (gg.size !== 4) {
+          var blob = new Blob([data], { type: 'image/png' });
+          const foto = blob;
+          const reader = new FileReader();
+          reader.onload = () => {
+            this.foto.url = reader.result as string;
+            if (this.foto.url != '') {
+              this.mensajeRealizado();
+            }
           }
+          reader.readAsDataURL(foto)
+  
+        } else {
+          this.fotoService.mirarFotoAntigua('' + this.persona[0].codigo).subscribe(data => {
+            this.foto = data;
+          });
         }
-        reader.readAsDataURL(foto)
-
-      } else {
-        this.fotoService.mirarFotoAntigua('' + this.persona[0].codigo).subscribe(data => {
-          this.foto = data;
-        });
-      }
-    });
+      }); */
   }
 
   mostrarFotoDocente(perCodigo: String) {
-    this.fotoService.mirarFoto(perCodigo).subscribe(data => {
-      var gg = new Blob([data], { type: 'application/json' })
-      if (gg.size !== 4) {
-        var blob = new Blob([data], { type: 'image/png' });
-        const foto = blob;
-        const reader = new FileReader();
-        reader.onload = () => {
-          this.foto.url = reader.result as string;
-          if (this.foto.url != '') {
-            this.mensajeRealizado();
-          }
-        }
-        reader.readAsDataURL(foto)
-
-      } else {
-        this.fotoService.mirarFotoAntigua('' + this.docente[0].persona.codigo).subscribe(data => {
-          this.foto = data;
-        });
-      }
-    });
+    /*  this.fotoService.mirarFoto(perCodigo).subscribe(data => {
+       var gg = new Blob([data], { type: 'application/json' })
+       if (gg.size !== 4) {
+         var blob = new Blob([data], { type: 'image/png' });
+         const foto = blob;
+         const reader = new FileReader();
+         reader.onload = () => {
+           this.foto.url = reader.result as string;
+           if (this.foto.url != '') {
+             this.mensajeRealizado();
+           }
+         }
+         reader.readAsDataURL(foto)
+ 
+       } else {
+         this.fotoService.mirarFotoAntigua('' + this.docente[0].persona.codigo).subscribe(data => {
+           this.foto = data;
+         });
+       }
+     }); */
   }
 
   mostrarFotoGraduado(perCodigo: String) {
-    this.fotoService.mirarFoto(perCodigo).subscribe(data => {
+    /* this.fotoService.mirarFoto(perCodigo).subscribe(data => {
       var gg = new Blob([data], { type: 'application/json' })
       if (gg.size !== 4) {
         var blob = new Blob([data], { type: 'image/png' });
@@ -628,38 +595,6 @@ export class EscanerComponent implements OnInit {
           this.foto = data;
         });
       }
-    });
+    }); */
   }
-
-
-  change(file: FileList): void {
-    this.nameFile = file[0].name.replace(/\s/g, "");
-    const foto = (event.target as HTMLInputElement).files[0];
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.foto.url = reader.result as string;
-      if (this.foto.url != '') {
-        this.mensajeRealizado();
-      }
-    }
-    reader.readAsDataURL(foto)
-    if (file[0].size > 8100000) {
-      Swal.fire({
-        title: 'El archivo supera el limite de tamaño que es de 8mb',
-        confirmButtonText: 'Entiendo',
-        confirmButtonColor: '#8f141b',
-
-      });
-    } else {
-      this.file = file;
-      this.cargaFoto = true;
-      Swal.fire({
-        icon: 'success',
-        title: 'Foto cargada, recuerde guardar los cambios realizados.',
-        showConfirmButton: true,
-        confirmButtonColor: '#8f141b',
-      });
-    }
-  }
-
 }

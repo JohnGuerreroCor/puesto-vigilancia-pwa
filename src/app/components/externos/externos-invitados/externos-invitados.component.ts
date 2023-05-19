@@ -1,7 +1,5 @@
 import { Component, OnInit, ViewChild, Inject } from '@angular/core';
-import { TipoDocumentoService } from '../../../services/tipo-documento.service';
 import { TipoDocumento } from '../../../models/tipo-documento';
-import { TerceroService } from '../../../services/tercero.service';
 import { Tercero } from '../../../models/tercero';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MatTableDataSource } from '@angular/material';
@@ -10,20 +8,14 @@ import { MatPaginator } from '@angular/material/paginator';
 import { Sede } from '../../../models/sede';
 import { SubSede } from '../../../models/sub-sede';
 import { Bloque } from '../../../models/bloque';
-import { UbicacionService } from '../../../services/ubicacion.service';
 import { Oficina } from '../../../models/oficina';
 import { fromEvent, Observable, Subscription } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
 import { Ticket } from '../../../models/ticket';
-import { TicketService } from '../../../services/ticket.service';
 import { DatePipe } from '@angular/common';
 import { FotoAntigua } from 'src/app/models/foto-antigua';
 import { Persona } from '../../../models/persona';
-import { PersonaService } from '../../../services/persona.service';
-import { GraduadoService } from '../../../services/graduado.service';
-import { FirebaseFileService } from '../../../services/firebase-file.service';
 import swal from 'sweetalert2';
 
 
@@ -106,23 +98,11 @@ export class ExternosInvitadosComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    public tipoDocumentoService: TipoDocumentoService,
-    public terceroService: TerceroService,
-    public ticketService: TicketService,
-    public ubicacionService: UbicacionService,
-    public personaService: PersonaService,
-    public graduadoService: GraduadoService,
     public dialog: MatDialog,
-    public firebaseFileServie: FirebaseFileService,
-    private authService: AuthService,
     private router: Router,
     private datePipe: DatePipe,
   ) {
 
-    if (this.authService.validacionToken()) {
-      this.obtenerSede();
-      this.obtenerTipoDocumento();
-    }
   }
 
   ngOnInit() {
@@ -180,12 +160,7 @@ export class ExternosInvitadosComponent implements OnInit {
   }
 
   obtenerTickets() {
-    this.ticketService.obtenerTickets(1).subscribe(data => {
-      this.dataSource = new MatTableDataSource<Ticket>(data);
-      this.listaTickets = data;
-      this.paginator.firstPage();
-      this.dataSource.paginator = this.paginator;
-    });
+
   }
 
   tipoRegistro() {
@@ -194,109 +169,29 @@ export class ExternosInvitadosComponent implements OnInit {
   }
 
   obtenerSede() {
-    this.ubicacionService.obtenerSedes().subscribe(data => {
-      this.sedes = data;
-    });
+
 
   }
 
   obtenerTipoDocumento() {
-    this.tipoDocumentoService.getTiposDocumentos().subscribe(data => {
-      this.tipoDocumentos = data;
-    });
+
   }
 
   buscarPersona() {
     this.enviarTicketPersona = true;
     this.ipuntEmailPersona = false;
     this.emails = [];
-    this.personaService.obtenerPersonaPorIdentificacion(this.formTercero.get('identificacion').value).subscribe(data => {
-      if (JSON.stringify(data) !== '[]') {
-        this.personaExiste = true;
-        this.graduadoService.obtenerGraduado(data[0].identificacion).subscribe(data => {
-          if (JSON.stringify(data) !== '[]') {
-            this.graduadoExiste = true;
-            swal.fire({
-              icon: 'warning',
-              title: 'El invitado es un Graduado',
-              text: 'Si el graduado no posee un correo electrónico vigente, por favor active el botón de la esquina superior derecha de este formulario, el sistema notificará a la Oficina de Graduados para su respectiva actualización, gracias.',
-            });
-          } else {
-            this.graduadoExiste = false;
-          }
-        });
-        this.persona = data;
-        this.personaExiste = true;//Cambia input email por un select email
-        this.emails.push(this.persona[0].emailPersonal, this.persona[0].emailInterno);
-        this.terceroExiste = true;
-        this.formTercero.controls['email'].enable();
-        this.formTercero.controls['sede'].enable();
-        this.formTercero.controls['subsede'].enable();
-        this.obtenerSede();
-        this.obtenerTipoDocumento();
-        this.formTercero.get('codigo').setValue(this.persona[0].codigo);
-        this.formTercero.get('tipoDocumento').setValue(this.persona[0].tipoDocumento);
-        this.formTercero.get('nombre').setValue(this.persona[0].nombre);
-        this.formTercero.get('apellido').setValue(this.persona[0].apellido);
-        this.formTercero.get('email').setValue(this.persona[0].emailInterno);
-      } else {
-        this.buscarTercero();
-      }
-    });
   }
 
   buscarTercero() {
     this.graduadoExiste = false;
-    this.terceroService.getTerceroId(this.formTercero.get('identificacion').value).subscribe(data => {
-      if (JSON.stringify(data) !== '[]') {
-        this.terceroExiste = true;
-        this.ipuntEmailPersona = true;
-        this.formTercero.controls['email'].enable();
-        this.formTercero.controls['sede'].enable();
-        this.formTercero.controls['subsede'].enable();
-        this.obtenerSede();
-        this.obtenerTipoDocumento();
-        this.formTercero.get('codigo').setValue(data[0].codigo);
-        this.formTercero.get('terceroCodigo').setValue(data[0].codigo);
-        this.formTercero.get('tipoDocumento').setValue(data[0].tipoDocumento);
-        this.formTercero.get('nombreCompleto').setValue(data[0].nombre1 + ' ' + data[0].nombre2 + ' ' + data[0].apellido1 + ' ' + data[0].apellido2);
-        this.formTercero.get('nombre').setValue(data[0].nombre1 + ' ' + data[0].nombre2);
-        this.formTercero.get('nombre1').setValue(data[0].nombre1);
-        this.formTercero.get('nombre2').setValue(data[0].nombre1);
-        this.formTercero.get('apellido').setValue(data[0].apellido1 + ' ' + data[0].apellido2);
-        this.formTercero.get('apellido1').setValue(data[0].apellido1);
-        this.formTercero.get('apellido2').setValue(data[0].apellido2);
-        this.formTercero.get('email').setValue(data[0].email);
-        this.tercero = data;
-      } else {
-        this.terceroExiste = false;
-        this.graduadoExiste = false;
-        this.ipuntEmailPersona = true;
-        this.personaExiste = false;
-        let id = this.formTercero.get('identificacion').value;
-        this.formTercero.controls['tipoDocumento'].enable();
-        this.formTercero.controls['nombre'].enable();
-        this.formTercero.controls['apellido'].enable();
-        this.formTercero.controls['email'].enable();
-        this.formTercero.controls['sede'].enable();
-        this.formTercero.controls['subsede'].enable();
-        this.mensajeAdvertencia();
-        this.formTercero.reset();
-        this.formTercero.get('identificacion').setValue(id);
-        this.obtenerTipoDocumento();
-      }
-    });
   }
 
   buscarSubsede(codigo: number) {
     this.formTercero.get('subsede').reset;
-    this.ubicacionService.buscarSubSedes(codigo).subscribe(data => {
-      this.subsedes = data;
-    });
+
     this.formTercero.get('oficina').reset;
-    this.ubicacionService.buscarOficinas(codigo).subscribe(data => {
-      this.oficinas = data;
-    });
+
 
     this.filteredOptions = this.myControl.valueChanges
       .pipe(
@@ -307,182 +202,29 @@ export class ExternosInvitadosComponent implements OnInit {
 
   buscarOficina(codigo: number) {
     this.formTercero.get('oficina').reset;
-    this.ubicacionService.buscarOficinas(codigo).subscribe(data => {
-      this.oficinas = data;
-    });
+
   }
 
   buscarBloque(codigo: number) {
     this.formTercero.get('bloque').reset;
-    this.ubicacionService.buscarBloques(codigo).subscribe(data => {
-      this.bloques = data;
-    });
+
   }
 
   generarTercero(): void {
-    this.terceroService.getTerceroId(this.formTercero.get('identificacion').value).subscribe(data => {
-      if (JSON.stringify(data) !== '[]') {
-        this.terceroExiste = true;
-        let tercero: Tercero = new Tercero();
-        let nombres = this.formTercero.get('nombre').value.split(" ", 2)
-        let apellidos = this.formTercero.get('apellido').value.split(" ", 2)
-        tercero.codigo = data[0].codigo;
-        tercero.tipoDocumento = this.formTercero.get('tipoDocumento').value;
-        tercero.identificacion = this.formTercero.get('identificacion').value;
-        tercero.nombreCompleto = '';
-        for (let index = 0; index < nombres.length; index++) {
-          tercero.nombreCompleto = tercero.nombreCompleto + nombres[index].toUpperCase() + ' ';
-          if (index == 0) {
-            tercero.nombre1 = '' + nombres[index].toUpperCase();
-          }
-          if (index == 1) {
-            tercero.nombre2 = '' + nombres[index].toUpperCase();
-          }
-        }
-        for (let index = 0; index < apellidos.length; index++) {
-          tercero.nombreCompleto = tercero.nombreCompleto + apellidos[index].toUpperCase() + ' ';
-          if (index == 0) {
-            tercero.apellido1 = '' + apellidos[index].toUpperCase();
-          }
-          if (index == 1) {
-            tercero.apellido2 = '' + apellidos[index].toUpperCase();
-          }
-        }
-        tercero.email = this.formTercero.get('email').value;
-        tercero.estado = '0';
-        tercero.fechaRegistro = new Date();
-        this.tercero[0] = tercero;
-        this.carnetNombre = nombres[0].toUpperCase() + ' ' + nombres[1].toUpperCase() + ' ' + apellidos[0].toUpperCase() + ' ' + apellidos[1].toUpperCase();
-        this.carnetCorreo = this.formTercero.get('email').value;
-        this.carnetId = this.formTercero.get('identificacion').value;
-        this.carnetInicio = this.datePipe.transform(this.formTercero.get('fechaInicio').value, 'dd-MM-yyyy');
-        this.carnetVigencia = this.datePipe.transform(this.formTercero.get('fechaVigencia').value, 'dd-MM-yyyy');
-        if (this.terceroExiste) {
-          this.actualizarTercero(tercero);
-        } else {
-          this.resgistrarTercero(tercero);
-        }
-      } else {
-        this.terceroExiste = false;
-        let tercero: Tercero = new Tercero();
-        let nombres = this.formTercero.get('nombre').value.split(" ", 2)
-        let apellidos = this.formTercero.get('apellido').value.split(" ", 2)
-        tercero.codigo = this.formTercero.get('codigo').value;
-        tercero.tipoDocumento = this.formTercero.get('tipoDocumento').value;
-        tercero.identificacion = this.formTercero.get('identificacion').value;
-        tercero.nombreCompleto = '';
-        for (let index = 0; index < nombres.length; index++) {
-          tercero.nombreCompleto = tercero.nombreCompleto + nombres[index].toUpperCase() + ' ';
-          if (index == 0) {
-            tercero.nombre1 = '' + nombres[index].toUpperCase();
-          }
-          if (index == 1) {
-            tercero.nombre2 = '' + nombres[index].toUpperCase();
-          }
-        }
-        for (let index = 0; index < apellidos.length; index++) {
-          tercero.nombreCompleto = tercero.nombreCompleto + apellidos[index].toUpperCase() + ' ';
-          if (index == 0) {
-            tercero.apellido1 = '' + apellidos[index].toUpperCase();
-          }
-          if (index == 1) {
-            tercero.apellido2 = '' + apellidos[index].toUpperCase();
-          }
-        }
-        tercero.email = this.formTercero.get('email').value;
-        tercero.estado = '0';
-        tercero.fechaRegistro = new Date();
-        this.tercero[0] = tercero;
-        this.carnetNombre = nombres[0].toUpperCase() + ' ' + nombres[1].toUpperCase() + ' ' + apellidos[0].toUpperCase() + ' ' + apellidos[1].toUpperCase();
-        this.carnetCorreo = this.formTercero.get('email').value;
-        this.carnetId = this.formTercero.get('identificacion').value;
-        this.carnetInicio = this.datePipe.transform(this.formTercero.get('fechaInicio').value, 'dd-MM-yyyy h:mm:ss aaa');
-        this.carnetVigencia = this.datePipe.transform(this.formTercero.get('fechaVigencia').value, 'dd-MM-yyyy h:mm:ss aaa');
-        if (this.terceroExiste) {
-          this.actualizarTercero(tercero);
-        } else {
-          this.resgistrarTercero(tercero);
-        }
-      }
-    });
+
   }
 
   resgistrarTercero(tercero: Tercero) {
-    this.terceroService.registrarTercero(tercero).subscribe(data => {
-      if (data > 0) {
-        swal.fire({
-          icon: 'success', title: 'Registrado', text: '¡Operación exitosa!',
-          toast: true,
-          position: 'top-right',
-          timer: 2500
-        });
-        this.ticket = !this.ticket;
-        //this.generarTicket();
-      } else {
-        this.mensajeError();
-      }
-    }, err => this.fError(err))
+
 
   }
 
   actualizarTercero(tercero: Tercero) {
-    this.terceroService.actualizarEmailTercero(tercero).subscribe(data => {
-      if (data > 0) {
-        swal.fire({
-          icon: 'success', title: 'Actualizado', text: '¡Operación exitosa!',
-          toast: true,
-          position: 'top-right',
-          timer: 2500
-        });
-        this.ticket = !this.ticket;
-        //this.generarTicket();
-      } else {
-        this.mensajeError();
-      }
-
-    }, err => this.fError(err))
+   
   }
 
   generarTicketTercero(): void {
-    this.terceroService.getTerceroId(this.formTercero.get('identificacion').value).subscribe(data => {
-      this.codigoTercero = data[0].codigo;
-      let ticket: Ticket = new Ticket();
-      let sede: Sede = new Sede();
-      let subSede: SubSede = new SubSede();
-      let bloque: Bloque = new Bloque();
-      let oficina: Oficina = new Oficina();
-      let tercero: Tercero = new Tercero();
-      let persona: Persona = new Persona();
-      tercero.codigo = this.codigoTercero;
-      ticket.tercero = tercero;
-      persona.codigo = null;
-      ticket.persona = persona;
-      ticket.fechaCreacion = new Date(this.formTercero.get('fechaInicio').value);
-      ticket.fechaVigencia = new Date(this.formTercero.get('fechaVigencia').value);
-      ticket.qr = '7%20' + data[0].identificacion;
-      sede.codigo = this.formTercero.get('sede').value;
-      ticket.sede = sede;
-      subSede.codigo = this.formTercero.get('subsede').value;
-      ticket.subSede = subSede;
-      if (+this.formTercero.get('tipoUbicacion').value === 1) {
-        bloque.codigo = +this.formTercero.get('bloque').value;
-        oficina.codigo = null;
-      } else {
-        oficina.codigo = +this.formTercero.get('oficinaCodigo').value;
-        bloque.codigo = null;
-      }
-      ticket.bloque = bloque;
-      ticket.oficina = oficina;
-      ticket.tipoLugar = +this.formTercero.get('tipoUbicacion').value;
-      ticket.tipo = 1;
-      if (this.correoGraduado === true) {
-        ticket.emailGraduado = 1;
-      } else {
-        ticket.emailGraduado = 0;
-      }
-      this.resgistrarTicket(ticket);
-      this.enviarTicketEmailTercero(ticket);
-    });
+    
   }
 
   generarTicketPersona(): void {
@@ -528,59 +270,16 @@ export class ExternosInvitadosComponent implements OnInit {
 
 
   resgistrarTicket(ticket: Ticket) {
-    this.ticketService.registrarTicket(ticket).subscribe(data => {
-      if (data > 0) {
-        this.mensajeSuccses();
-        this.obtenerTickets();
-        //this.generarTicket();
-      } else {
-        this.mensajeError();
-      }
-    }, err => this.fError(err))
+    
 
   }
 
   enviarTicketEmailTercero(ticket: Ticket) {
-    this.terceroService.getTerceroId(this.formTercero.get('identificacion').value).subscribe(data => {
-      let email = this.formTercero.get('email').value;
-      let nombre = data[0].nombreCompleto;
-      let identificacion = data[0].identificacion;
-      this.ticketService.obtenerTicketTerCodigo(data[0].codigo, 2).subscribe(data => {
-        let fechaInicioEmail: String = this.datePipe.transform(ticket.fechaCreacion, 'dd-MM-yyyy  h:mm:ss aaa');
-        let fechaVigenciaEmail: String = this.datePipe.transform(ticket.fechaVigencia, 'dd-MM-yyyy  h:mm:ss aaa');
-        let qr: String = 'size=150x150&data=' + '7%20' + identificacion;
-        this.qrCodeTwo = '7%20' + identificacion;
-        this.ticketService.enviarTicketInvitadoEmail(email, this.foto.url, '' + data[0].codigo, nombre, identificacion, this.carnetLugar, fechaInicioEmail, fechaVigenciaEmail, qr).subscribe(data => {
-          if (data.estado == true) {
-            this.mensajeSuccsesEmail();
-          } else {
-            this.mensajeError();
-          }
-        }, err => this.fError(err));
-      });
-    });
+    
   }
 
   enviarTicketEmailPersona(ticket: Ticket) {
-    this.enviarTicketPersona = false;
-    this.personaService.obtenerPersonaPorIdentificacion(this.formTercero.get('identificacion').value).subscribe(data => {
-      let email = this.formTercero.get('email').value;
-      let nombre = data[0].nombre + ' ' + data[0].apellido;
-      let identificacion = data[0].identificacion;
-      this.ticketService.obtenerTicketPerCodigo(data[0].codigo, 2).subscribe(data => {
-        let fechaInicioEmail: String = this.datePipe.transform(ticket.fechaCreacion, 'dd-MM-yyyy  h:mm:ss aaa');
-        let fechaVigenciaEmail: String = this.datePipe.transform(ticket.fechaVigencia, 'dd-MM-yyyy  h:mm:ss aaa');
-        let qr: String = 'size=150x150&data=' + '7%20' + identificacion;
-        this.qrCodeTwo = '7%20' + identificacion;
-        this.ticketService.enviarTicketInvitadoEmail(email, this.foto.url, '' + data[0].codigo, nombre, identificacion, this.carnetLugar, fechaInicioEmail, fechaVigenciaEmail, qr).subscribe(data => {
-          if (data.estado == true) {
-            this.mensajeSuccsesEmail();
-          } else {
-            this.mensajeError();
-          }
-        }, err => this.fError(err));
-      });
-    });
+    
   }
 
   //FILTRO AUTOCOMPLETAR OFICINA
@@ -695,8 +394,6 @@ export class ExternosInvitadosComponent implements OnInit {
     let arr: string[] = err.split(":");
 
     if (arr[0] == "Access token expired") {
-
-      this.authService.logout();
       this.router.navigate(['login']);
 
     } else {
@@ -710,23 +407,10 @@ export class ExternosInvitadosComponent implements OnInit {
   subirArchivo() {
     this.nombreArchivo = "CARNETIZACION/FOTOS/" + this.nombreArchivo;
     const archivo = this.datosFormulario.get("archivo");
-    const referencia = this.firebaseFileServie.referenciaCloudStorage(
-      this.nombreArchivo
-    );
-    const cargar = this.firebaseFileServie.cargarCloudStorage(
-      this.nombreArchivo,
-      archivo
-    );
+  
+   
     // Cambia el porcentaje
-    cargar.percentageChanges().subscribe((porcentaje) => {
-      referencia.getDownloadURL().subscribe((URL) => {
-        this.URLPublica = URL;
-        this.finalizado = true;
-        this.foto.url = this.URLPublica;
-        this.foto.url = this.foto.url.replace('https://firebasestorage.googleapis.com/v0/b/doctoradocienciasdelasaludusco.appspot.com/o/CARNETIZACION%2FFOTOS%2F', '').replace('?alt=media&token=', 'url');
-        return [this.URLPublica, this.finalizado];
-      });
-    });
+    
   }
   // Evento que gatilla cuando el input de tipo archivo cambia
   //https://firebasestorage.googleapis.com/v0/b/doctoradocienciasdelasaludusco.appspot.com/o/CARNETIZACION%2FFIRMADIGITALunnamed.png?alt=media&token=2837ef64-53be-43ee-9486-98dfe1527776

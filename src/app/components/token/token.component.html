@@ -39,7 +39,7 @@
           </div>
           <div class="row">
             <div class="col mt-3 mb-4">
-              <button (click)="validarToken()" type="button" class="btn btn-usco-vt"> Validar Token <i *ngIf="cargando"
+              <button (click)="validarToken()" [routerLink]="['/inicio']" routerLinkActive="router-link-active"  type="button" class="btn btn-usco-vt"> Validar Token <i *ngIf="cargando"
                   class="fas fa-spinner fa-pulse"></i></button>
             </div>
           </div>

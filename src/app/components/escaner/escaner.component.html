@@ -918,6 +918,8 @@
             </div>
             <!--CAMARA DE ESCANER-->
           </div>
+        </div>
+        <div class="row">
           <div class="col">
             <div class="row">
               <div class="col">
@@ -936,7 +938,7 @@
                 <img src="../assets/precarga-usco.gif" class="img-fluid" alt="USCO">
               </div>
               <div class="col" *ngIf="alert">
-                <div class="container" style="width: 250px">
+                <div class="container">
                   <zxing-scanner [(device)]="currentDevice" (scanSuccess)="onCodeResult($event)"
                     [formats]="formatsEnabled" [tryHarder]="tryHarder" (permissionResponse)="onHasPermission($event)"
                     (camerasFound)="onCamerasFound($event)"
