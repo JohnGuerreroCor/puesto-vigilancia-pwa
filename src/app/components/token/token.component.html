@@ -3,14 +3,19 @@
     <div class="card-header bg-usco-vt header-usco-card">
       <div class="row">
         <div class="col">
-          <img mat-card-image src="assets/universidad-surcolombiana-multicampos-white.png" class="img-fluid" />
+          <img
+            mat-card-image
+            src="assets/universidad-surcolombiana-multicampos-white.png"
+            class="img-fluid"
+          />
         </div>
       </div>
-      <hr class="punteada">
+      <hr class="punteada" />
       <div class="row">
         <div class="col">
           <h6 class="font-weight-bold text-white">
-            SISTEMA PUESTO DE VIGILANCIA <br> TOKEN
+            SISTEMA PUESTO DE VIGILANCIA <br />
+            TOKEN
           </h6>
         </div>
       </div>
@@ -21,17 +26,20 @@
           <div class="row">
             <div class="col">
               <p>
-                Se ha enviado a su correo institucional <br> (<b *ngIf="correo">{{
-                  correo.correo
-                  }}</b>) un codigo de verificación. <br> Por favor ingresar a su correo, copia
-                el codigo <br> y diligenciar en el campo correspondiente.
+                Se ha enviado a su correo institucional <br />
+                (<b>john.guerrero@usco.edu.co</b>) un codigo de verificación.
+                <br />
+                Por favor ingresar a su correo, copia el codigo <br />
+                y diligenciar en el campo correspondiente.
               </p>
             </div>
           </div>
           <div class="row pl-5 pr-5">
             <div class="col">
               <mat-form-field class="example-full-width">
-                <span matPrefix class="mr-2"><i class="fa-solid fa-lock"></i></span>
+                <span matPrefix class="mr-2"
+                  ><i class="fa-solid fa-lock"></i
+                ></span>
                 <mat-label>Código de verificación</mat-label>
                 <input matInput name="codigo" [(ngModel)]="codigo" />
               </mat-form-field>
@@ -39,13 +47,26 @@
           </div>
           <div class="row">
             <div class="col mt-3 mb-4">
-              <button (click)="validarToken()" [routerLink]="['/inicio']" routerLinkActive="router-link-active"  type="button" class="btn btn-usco-vt"> Validar Token <i *ngIf="cargando"
-                  class="fas fa-spinner fa-pulse"></i></button>
+              <button
+                (click)="validarToken()"
+                [routerLink]="['/inicio']"
+                routerLinkActive="router-link-active"
+                type="button"
+                class="btn btn-usco-vt"
+              >
+                Validar Token
+                <i *ngIf="cargando" class="fas fa-spinner fa-pulse"></i>
+              </button>
             </div>
           </div>
           <div class="row">
             <div class="col">
-              <small><b class="version">© {{ today | date : "yyyy" }} CITCD - Version 1 Construcción 1.0</b></small>
+              <small
+                ><b class="version"
+                  >© {{ today | date : "yyyy" }} CITCD - Version 1 Construcción
+                  1.0</b
+                ></small
+              >
             </div>
           </div>
         </form>

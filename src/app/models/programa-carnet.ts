@@ -1,5 +1,5 @@
 export class ProgramaCarnet {
-  codigo: number;
+  	codigo: number;
 	codigoUaa: number;
 	nombrePrograma: String;
 	nombreCorto: String;

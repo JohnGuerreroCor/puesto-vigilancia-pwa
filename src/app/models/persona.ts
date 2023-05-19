@@ -1,5 +1,5 @@
 export class Persona {
-  codigo: number;
+  	codigo: number;
 	tipoDocumento: number;
 	identificacion: String;
 	grupoSanguineo: String;

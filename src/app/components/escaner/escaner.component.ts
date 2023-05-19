@@ -1,32 +1,29 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
 import { BarcodeFormat } from "@zxing/library";
-import { environment } from 'src/environments/environment';
-import { Estudiante } from '../../models/estudiante';
-import { FotoAntigua } from '../../models/foto-antigua';
-import { Router } from '@angular/router';
-import { BehaviorSubject, fromEvent, Observable, Subscription } from 'rxjs';
-import { DatePipe } from '@angular/common';
-import { Graduado } from 'src/app/models/graduado';
-import { Docente } from 'src/app/models/docente';
-import { Administrativo } from 'src/app/models/administrativo';
-import { Persona } from 'src/app/models/persona';
-import Swal from 'sweetalert2';
-import { Ticket } from 'src/app/models/ticket';
-
+import { environment } from "src/environments/environment";
+import { Estudiante } from "../../models/estudiante";
+import { FotoAntigua } from "../../models/foto-antigua";
+import { Router } from "@angular/router";
+import { BehaviorSubject, fromEvent, Observable, Subscription } from "rxjs";
+import { DatePipe } from "@angular/common";
+import { Graduado } from "src/app/models/graduado";
+import { Docente } from "src/app/models/docente";
+import { Administrativo } from "src/app/models/administrativo";
+import { Persona } from "src/app/models/persona";
+import Swal from "sweetalert2";
+import { Ticket } from "src/app/models/ticket";
 
 @Component({
-  selector: 'app-escaner',
-  templateUrl: './escaner.component.html',
-  styleUrls: ['./escaner.component.css'],
+  selector: "app-escaner",
+  templateUrl: "./escaner.component.html",
+  styleUrls: ["./escaner.component.css"],
   providers: [DatePipe],
 })
 export class EscanerComponent implements OnInit {
-
   availableDevices: MediaDeviceInfo[];
   currentDevice: MediaDeviceInfo = null;
 
   titulo: String = "Hello";
-
 
   hasDevices: boolean;
   hasPermission: boolean;
@@ -48,7 +45,6 @@ export class EscanerComponent implements OnInit {
 
   resizeObservable: Observable<Event>;
   resizeSubscription: Subscription;
-
 
   //Booleanos
   alert: boolean = true;
@@ -89,21 +85,20 @@ export class EscanerComponent implements OnInit {
     url: "",
   };
 
-  constructor(
-    private datePipe: DatePipe,
-    private router: Router) {
-    this.codigoQr = 'https://www.usco.edu.co/';
+  constructor(private datePipe: DatePipe, private router: Router) {
+    this.codigoQr = "https://www.usco.edu.co/";
   }
 
   scroll(page: HTMLElement) {
-    console.log('Scroll');
+    console.log("Scroll");
     page.scrollIntoView();
   }
 
   buscar(estamento: number, codigo: String) {
     switch (estamento) {
-      case 1://ADMINISTRATIVO
-        this.foto.url = '';
+      case 1: //ADMINISTRATIVO
+        console.log("admin");
+        this.foto.url = "";
         this.carnetEstudiante = false;
         this.carnetGraduado = false;
         this.carnetDocente = false;
@@ -111,8 +106,8 @@ export class EscanerComponent implements OnInit {
         this.tiquete = false;
         this.buscarAdministrativo(codigo);
         break;
-      case 2://ESTUDIANTE
-        this.foto.url = '';
+      case 2: //ESTUDIANTE
+        this.foto.url = "";
         this.carnetEstudiante = true;
         this.carnetGraduado = false;
         this.carnetDocente = false;
@@ -120,8 +115,8 @@ export class EscanerComponent implements OnInit {
         this.tiquete = false;
         this.buscarEstudiante(codigo);
         break;
-      case 3://DOCENTE
-        this.foto.url = '';
+      case 3: //DOCENTE
+        this.foto.url = "";
         this.carnetEstudiante = false;
         this.carnetGraduado = false;
         this.carnetDocente = true;
@@ -129,8 +124,8 @@ export class EscanerComponent implements OnInit {
         this.tiquete = false;
         this.buscarDocente(codigo);
         break;
-      case 4://GRADUADO
-        this.foto.url = '';
+      case 4: //GRADUADO
+        this.foto.url = "";
         this.carnetEstudiante = false;
         this.carnetGraduado = true;
         this.carnetDocente = false;
@@ -138,8 +133,8 @@ export class EscanerComponent implements OnInit {
         this.tiquete = false;
         this.buscarGraduado(codigo);
         break;
-      case 7://TIQUETE
-        this.foto.url = '-';
+      case 7: //TIQUETE
+        this.foto.url = "-";
         this.tiquete = true;
         this.carnetEstudiante = false;
         this.carnetGraduado = false;
@@ -148,83 +143,118 @@ export class EscanerComponent implements OnInit {
         this.buscarTiquete(codigo);
         break;
       default:
-        this.foto.url = '';
+        this.foto.url = "";
         this.alert = true;
         Swal.fire({
-          icon: 'error',
-          title: 'QR Desconocido',
-          text: 'El código escaneado no posee los parametros correspondientes.',
+          icon: "error",
+          title: "QR Desconocido",
+          text: "El código escaneado no posee los parametros correspondientes.",
         });
         break;
     }
   }
 
   buscarManual(estamento: number) {
-    console.log('Estamento', estamento);
+    console.log("Estamento", estamento);
     switch (+estamento) {
-      case 1://ADMINISTRATIVO
+      case 1: //ADMINISTRATIVO
         this.carnetEstudiante = false;
         this.carnetGraduado = false;
         this.carnetDocente = false;
         this.carnetAdministrativo = true;
         this.tiquete = false;
-        this.busquedaAdministrativo = ""
+        this.busquedaAdministrativo = "";
         this.busquedaDocente = "";
         this.busqueda = "";
         this.busquedaGraduado = "";
         break;
-      case 2://ESTUDIANTE
+      case 2: //ESTUDIANTE
         this.carnetEstudiante = true;
         this.carnetGraduado = false;
         this.carnetDocente = false;
         this.carnetAdministrativo = false;
         this.tiquete = false;
-        this.busquedaAdministrativo = ""
+        this.busquedaAdministrativo = "";
         this.busquedaDocente = "";
         this.busquedaGraduado = "";
         break;
-      case 3://DOCENTE
+      case 3: //DOCENTE
         this.carnetEstudiante = false;
         this.carnetGraduado = false;
         this.carnetDocente = true;
         this.carnetAdministrativo = false;
         this.tiquete = false;
-        this.busquedaAdministrativo = ""
+        this.busquedaAdministrativo = "";
         this.busqueda = "";
         this.busquedaGraduado = "";
         break;
-      case 4://GRADUADO
+      case 4: //GRADUADO
         this.carnetEstudiante = false;
         this.carnetGraduado = true;
         this.carnetDocente = false;
         this.carnetAdministrativo = false;
         this.tiquete = false;
-        this.busquedaAdministrativo = ""
+        this.busquedaAdministrativo = "";
         this.busquedaDocente = "";
         this.busqueda = "";
         break;
-      case 5://TIQUETE
+      case 5: //TIQUETE
         this.tiquete = true;
         this.carnetEstudiante = false;
         this.carnetGraduado = false;
         this.carnetDocente = false;
         this.carnetAdministrativo = false;
-        this.busquedaAdministrativo = ""
+        this.busquedaAdministrativo = "";
         this.busquedaDocente = "";
         this.busquedaGraduado = "";
         this.busqueda = "";
         break;
       default:
         Swal.fire({
-          icon: 'error',
-          title: 'Codigo desconocido',
-          text: 'El código no posee los parametros correspondientes.',
+          icon: "error",
+          title: "Codigo desconocido",
+          text: "El código no posee los parametros correspondientes.",
         });
         break;
     }
   }
 
   buscarEstudiante(codigo: String) {
+    this.foto.url = "assets/108797.png";
+    this.estudiante = [
+      {
+        codigo: "20171157616",
+        codigoPrograma: 0,
+        fechaIngreso: new Date(),
+        codigoInscripcion: 0,
+        estadoEgresado: 0,
+        persona: {
+          codigo: 0,
+          tipoDocumento: 0,
+          identificacion: "1075303330",
+          grupoSanguineo: "O+",
+          genero: "M",
+          fechaExpedicionDocumento: new Date(),
+          fechaNacimiento: new Date(),
+          edad: 26,
+          nombre: "JOHN DAVID",
+          apellido: "GUERRERO CÓRDOBA",
+          emailPersonal: "guerrerocordobajohn@gmail.com",
+          emailInterno: "john.guerrero@usco.edu.co",
+        },
+        programa: {
+          codigo: 0,
+          codigoUaa: 0,
+          nombrePrograma: "INGENIERÍA DE SOFTWARE",
+          nombreCorto: " NEIVA - INGENIERÍA DE SOFTWARE",
+          sede: "NEIVA",
+        },
+      },
+    ];
+    this.lectura();
+    setTimeout(() => {
+      this.alert = true;
+    }, 2000);
     /* this.estServices.getEstudiante(codigo).subscribe(data => {
       if (JSON.stringify(data) !== "[]") {
         this.lectura();
@@ -252,6 +282,39 @@ export class EscanerComponent implements OnInit {
   }
 
   buscarGraduado(codigo: String) {
+    this.foto.url = "assets/108797.png";
+    this.graduado = [
+      {
+        codigo: "0",
+        fechaGrado: new Date("2017-02-25"),
+        codigoPlan: 0,
+        persona: {
+          codigo: 0,
+          tipoDocumento: 0,
+          identificacion: "1075303330",
+          grupoSanguineo: "O+",
+          genero: "M",
+          fechaExpedicionDocumento: new Date(),
+          fechaNacimiento: new Date(),
+          edad: 26,
+          nombre: "JOHN DAVID",
+          apellido: "GUERRERO CÓRDOBA",
+          emailPersonal: "guerrerocordobajohn@gmail.com",
+          emailInterno: "john.guerrero@usco.edu.co",
+        },
+        programa: {
+          codigo: 0,
+          codigoUaa: 0,
+          nombrePrograma: "TECNOLOGÍA EN DESARROLLO DE SOFTWARE",
+          nombreCorto: " NEIVA - TECNOLOGÍA EN DESARROLLO DE SOFTWARE",
+          sede: "NEIVA",
+        },
+      },
+    ];
+    this.lectura();
+    setTimeout(() => {
+      this.alert = true;
+    }, 2000);
     /*  this.graduadoService.obtenerGraduado(codigo).subscribe(data => {
        if (JSON.stringify(data) !== "[]") {
          this.lectura();
@@ -279,6 +342,36 @@ export class EscanerComponent implements OnInit {
   }
 
   buscarDocente(id: String) {
+    this.foto.url = "assets/108797.png";
+    this.docente = [
+      {
+        codigo: 0,
+        vinculacionCodigo: 0,
+        vinculacionNombre: "CATEDRA VISITANTE",
+        vinculacionFechaInicio: new Date(),
+        vinculacionFechaFin: new Date(),
+        nombrePrograma: "INGENIERÍA DE SOFTWARE",
+        sede: "NEIVA",
+        persona: {
+          codigo: 0,
+          tipoDocumento: 0,
+          identificacion: "1075303330",
+          grupoSanguineo: "O+",
+          genero: "M",
+          fechaExpedicionDocumento: new Date(),
+          fechaNacimiento: new Date(),
+          edad: 26,
+          nombre: "JOHN DAVID",
+          apellido: "GUERRERO CÓRDOBA",
+          emailPersonal: "guerrerocordobajohn@gmail.com",
+          emailInterno: "john.guerrero@usco.edu.co",
+        },
+      },
+    ];
+    this.lectura();
+    setTimeout(() => {
+      this.alert = true;
+    }, 2000);
     /*  this.docenteService.getDocente(id).subscribe(data => {
        if (JSON.stringify(data) !== "[]") {
          this.lectura();
@@ -306,6 +399,25 @@ export class EscanerComponent implements OnInit {
   }
 
   buscarAdministrativo(id: String) {
+    this.foto.url = "assets/108797.png";
+    this.administrativo = [
+      {
+        codigo: 0,
+        identificacion: "1075303330",
+        codigoPersona: 108797,
+        vinculacionCodigo: 0,
+        vinculacionNombre: "CONTRATISTA PRESTACIÓN DE SERVICIOS",
+        cargoNombre: "APOYO Y ASESORÍA",
+        vinculacionFechaInicio: new Date(),
+        vinculacionFechaFin: new Date(),
+        uaaDependencia: 0,
+        nombrePrograma: "INGENIERÍA DE SOFTWARE",
+      },
+    ];
+    this.lectura();
+    setTimeout(() => {
+      this.alert = true;
+    }, 2000);
     /* this.administrativoService.getAdministrativo(id).subscribe(data => {
       if (JSON.stringify(data) !== "[]") {
         this.lectura();
@@ -396,7 +508,7 @@ export class EscanerComponent implements OnInit {
   }
 
   onDeviceSelectChange(selected: string) {
-    const device = this.availableDevices.find(x => x.deviceId === selected);
+    const device = this.availableDevices.find((x) => x.deviceId === selected);
     this.currentDevice = device || null;
   }
 
@@ -409,16 +521,16 @@ export class EscanerComponent implements OnInit {
         }, 9000); */
 
   onCodeResult(resultString: string) {
-    console.log('QR: ', resultString)
+    console.log("QR: ", resultString);
     let parametros = resultString.split(" ");
     this.qrResultString.push(resultString);
-    console.log('Parametros: ', parametros);
-    console.log('Longitud: ', parametros.length);
+    console.log("Parametros: ", parametros);
+    console.log("Longitud: ", parametros.length);
     console.log("Longitud", this.qrResultString.length);
     if (this.qrResultString.length < 2) {
       console.log("Longitud", this.qrResultString.length);
       if (parametros.length <= 1) {
-        this.foto.url = '';
+        this.foto.url = "";
         this.alert = true;
         this.mensajeError();
         this.error();
@@ -427,7 +539,7 @@ export class EscanerComponent implements OnInit {
         this.buscar(+parametros[0], parametros[1]);
       }
     } else {
-      console.log('**', this.qrResultString);
+      console.log("**", this.qrResultString);
       console.log(
         this.qrResultString[this.qrResultString.length - 2],
         "---",
@@ -437,7 +549,7 @@ export class EscanerComponent implements OnInit {
         this.qrResultString[this.qrResultString.length - 2] !== resultString
       ) {
         if (parametros.length <= 1) {
-          this.foto.url = '';
+          this.foto.url = "";
           this.alert = true;
           this.mensajeError();
           this.error();
@@ -457,7 +569,6 @@ export class EscanerComponent implements OnInit {
     }
     this.titulo = this.qrResultString[this.qrResultString.length];
   }
-
 
   onTorchCompatible(isCompatible: boolean): void {
     this.torchAvailable$.next(isCompatible || false);
@@ -491,14 +602,16 @@ export class EscanerComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (window.screen.width <= 950) { // 768px portrait
+    if (window.screen.width <= 950) {
+      // 768px portrait
       this.mobile = true;
     } else {
       this.mobile = false;
     }
-    this.resizeObservable = fromEvent(window, 'resize');
-    this.resizeSubscription = this.resizeObservable.subscribe(evt => {
-      if (window.screen.width <= 950) { // 768px portrait
+    this.resizeObservable = fromEvent(window, "resize");
+    this.resizeSubscription = this.resizeObservable.subscribe((evt) => {
+      if (window.screen.width <= 950) {
+        // 768px portrait
         this.mobile = true;
       } else {
         this.mobile = false;
